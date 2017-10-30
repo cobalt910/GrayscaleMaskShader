@@ -31,8 +31,7 @@ public class GrayscaleEditor : ShaderGUI
     {
         FindProperties(properties);
         m_MaterialEditor = materialEditor;
-        Material mat = materialEditor.target as Material;
-        ShaderPropertiesGUI(mat);
+        ShaderPropertiesGUI();
     }
 
     public static class Styles
@@ -71,18 +70,19 @@ public class GrayscaleEditor : ShaderGUI
         BurnPow = FindProperty("_BurnPow", props);
     }
 
-    private void ShaderPropertiesGUI(Material mat)
+    private void ShaderPropertiesGUI()
     {
         EditorGUIUtility.labelWidth = 0;
 
         EditorGUI.BeginChangeCheck();
         {
-            GUILayout.Label("Main Field", EditorStyles.centeredGreyMiniLabel);
+            GUILayout.Label("Main & Emission", EditorStyles.centeredGreyMiniLabel);
             if(MainTex.textureValue != null)
                 m_MaterialEditor.ColorProperty(Color, "Color");
             m_MaterialEditor.TexturePropertySingleLine(
                 Styles.mainTex, MainTex,
                 MainTex.textureValue != null ? ColorPow : null);
+            m_MaterialEditor.TextureScaleOffsetProperty(MainTex);
             GUILayout.Space(10);
 
             if (EmissionTex.textureValue != null)
