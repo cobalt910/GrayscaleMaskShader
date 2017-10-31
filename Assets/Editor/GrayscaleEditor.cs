@@ -15,6 +15,9 @@ public class GrayscaleEditor : ShaderGUI
     private MaterialProperty MainTex;
     private MaterialProperty ColorPow;
 
+    private MaterialProperty Normal;
+    private MaterialProperty NormalPow;
+
     private MaterialProperty EmissionCol;
     private MaterialProperty EmissionTex;
     private MaterialProperty EmissionPow;
@@ -40,6 +43,9 @@ public class GrayscaleEditor : ShaderGUI
         public static GUIContent mainTex = new GUIContent("Albedo");
         public static GUIContent colorPow = new GUIContent("Color Power");
 
+        public static GUIContent normal = new GUIContent("Normal");
+        public static GUIContent normalPow = new GUIContent("Normal Power");
+
         public static GUIContent emissionCol = new GUIContent("Emission Color");
         public static GUIContent emissionTex = new GUIContent("Emission Texture");
         public static GUIContent emissionPow = new GUIContent("Emission Power");
@@ -57,6 +63,9 @@ public class GrayscaleEditor : ShaderGUI
         Color = FindProperty("_Color", props);
         MainTex = FindProperty("_MainTex", props);
         ColorPow = FindProperty("_ColorPow", props);
+
+        Normal = FindProperty("_Normal", props);
+        NormalPow = FindProperty("_NormalPow", props);
 
         EmissionCol = FindProperty("_EmissionCol", props);
         EmissionTex = FindProperty("_EmissionTex", props);
@@ -83,7 +92,11 @@ public class GrayscaleEditor : ShaderGUI
                 Styles.mainTex, MainTex,
                 MainTex.textureValue != null ? ColorPow : null);
             m_MaterialEditor.TextureScaleOffsetProperty(MainTex);
-            GUILayout.Space(10);
+
+            m_MaterialEditor.TexturePropertySingleLine(
+                Styles.normal, Normal,
+                Normal.textureValue != null ? NormalPow : null);
+
 
             if (EmissionTex.textureValue != null)
                 m_MaterialEditor.ColorProperty(EmissionCol, "Emission Color");
@@ -95,7 +108,6 @@ public class GrayscaleEditor : ShaderGUI
             m_MaterialEditor.TexturePropertySingleLine(Styles.noiseTex, NoiseTex);
             if (NoiseTex.textureValue != null)
                 m_MaterialEditor.RangeProperty(NoisePow, "Noise Power");
-            GUILayout.Space(10);
 
             m_MaterialEditor.TexturePropertySingleLine(Styles.burnTex, BurnTex);
             if (BurnTex.textureValue != null)

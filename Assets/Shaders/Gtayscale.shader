@@ -4,6 +4,9 @@
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_ColorPow ("Color Power", Float) = 1
 
+		_Normal ("Normal Map", 2D) = "bump" {}
+		_NormalPow ("Normal Power", Range(-2,2)) = 1
+
 		_EmissionCol ("Emission Color", Color) = (1,1,1,1)
 		_EmissionTex ("Emission Texture", 2D) = "black" {}
 		_EmissionPow ("Emission Power", Range(0,10)) = 0
@@ -36,6 +39,9 @@
 		fixed4 _Color;
 		sampler2D _MainTex;
 		half _ColorPow;
+
+		sampler2D _Normal;
+		half _NormalPow;
 
 		sampler2D _NoiseTex;
 		half _NoisePow;
@@ -83,6 +89,7 @@
 				o.Albedo *= emission;
 			}
 
+			o.Normal = normalize(UnpackScaleNormal(tex2D(_Normal, IN.uv_MainTex), _NormalPow));
 			o.Emission = emission;
 			o.Alpha = albedo.a;
 		}
