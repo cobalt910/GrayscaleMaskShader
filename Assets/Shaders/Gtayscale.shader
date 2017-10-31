@@ -17,10 +17,6 @@
 		_BurnTex ("Burn Texture", 2D) = "black" {}
 		_BurnSize ("Burn Size", Range(0,1)) = 0
 		_BurnPow ("Burn Power", Range(0,5)) = 0
-
-//		_Position ("Mask Position", Vector) = (0,0,0,0)
-//		_Radius ("Mask Radius", Float) = 0
-//		_Softness ("Mask Softness", Float) = 0
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -78,17 +74,20 @@
 			fixed4 albedo = lerp(gc, col * _ColorPow, lerpFac);
 			fixed4 emission = lerp(fixed4(0,0,0,0), emi * _EmissionPow, lerpFac);
 
-			// apply albedo
-			o.Albedo = albedo.rgb;
 
 			if(lerpFac < _BurnSize && lerpFac > 0)
 			{
 				float2 uv_burn = float2(lerpFac * (1/_BurnSize), 0);
 				fixed4 burnEmission = tex2D (_BurnTex, uv_burn);
-				emission = lerp(emission, burnEmission * _BurnPow, lerpFac);
-				o.Albedo *= emission;
+
+				// try to fix strange yellow border in burn effect
+				// uncomment next line to see this and comment emission lerp
+				// emission = burnEmission * _BurnPow;				
+				emission = lerp(fixed4(0,0,0,0), burnEmission * _BurnPow, saturate(lerpFac - 0.1));
+				albedo *= emission;
 			}
 
+			o.Albedo = albedo.rgb;
 			o.Normal = normalize(UnpackScaleNormal(tex2D(_Normal, IN.uv_MainTex), _NormalPow));
 			o.Emission = emission;
 			o.Alpha = albedo.a;
